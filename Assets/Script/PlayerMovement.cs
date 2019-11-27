@@ -101,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
             anime.SetBool("IsMove", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !IsJump)
+        if (Input.GetKeyDown(KeyCode.UpArrow) && !IsJump)
         {
             rigid.AddForce(Vector3.up * JumpSpeed, ForceMode2D.Impulse);
             IsJump = true;

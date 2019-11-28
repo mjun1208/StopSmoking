@@ -18,10 +18,10 @@ public class EnemyManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < EnemyArray.Length; i++)
-        {
-            EnemyArray[i].SetActive(false);
-        }
+        //for (int i = 0; i < EnemyArray.Length; i++)
+        //{
+        //    EnemyArray[i].SetActive(false);
+        //}
     }
 
     // Update is called once per frame

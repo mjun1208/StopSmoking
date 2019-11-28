@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rigid;
     private Animator anime;
     public GameObject Image;
+    public GameObject AttackColl;
 
     public float Speed = 5;
     public float JumpSpeed = 6;
@@ -82,6 +83,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Move() {
+        AttackColl.SetActive(false);
+
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             anime.SetBool("IsMove", true);
@@ -114,6 +117,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.X) && !IsAttack)
         {
+            AttackColl.SetActive(true);
             if (IsJump)
             {
                 anime.SetBool("IsFlyAttack", true);

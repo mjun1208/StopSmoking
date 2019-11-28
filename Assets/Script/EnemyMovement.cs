@@ -6,14 +6,21 @@ public class EnemyMovement : MonoBehaviour
 {
     public GameObject Player;
     public float Speed = 3;
+    public float jumpSpeed = 8;
     private Vector2 Target;
     private Vector2 Dir;
 
     private Rigidbody2D rigid;
     private Animator anime;
+    private BoxCollider2D collider;
     private float DelayTime;
     private float RandomTime;
 
+    private bool IsJump;
+    private bool IsFlyKick;
+
+    private float invincibility;
+    private bool IsKnockOut;
     private enum EnemyState
     {
         Walk,
@@ -30,8 +37,14 @@ public class EnemyMovement : MonoBehaviour
         State = EnemyState.Walk;
         rigid = GetComponent<Rigidbody2D>();
         anime = GetComponent<Animator>();
+        collider = GetComponent<BoxCollider2D>();
         DelayTime = 0;
         RandomTime = Random.Range(0.3f, 1.5f);
+        IsJump = false;
+        IsFlyKick = false;
+        IsKnockOut = false;
+
+        invincibility = 0;
     }
 
     // Update is called once per frame
@@ -78,36 +91,67 @@ public class EnemyMovement : MonoBehaviour
                     State = EnemyState.Walk;
                     anime.SetBool("IsAttack", false);
                 }
-                //State = EnemyState.Walk;
-                //rigid.MovePosition(transform.position + (new Vector3(Target.x, 0, 0) * Speed * Time.deltaTime));
-                //if (Target.x > 0)
-                //{
-                //    transform.localScale = new Vector3(4.3f, 4.3f, 4.3f);
-                //}
-                //else
-                //{
-                //    transform.localScale = new Vector3(-4.3f, 4.3f, 4.3f);
-                //}
                 break;
 
             case EnemyState.Jump:
-                //if (transform.localScale.x > 0)
-                //{
-                //    rigid.AddForce(Vector3.up * Speed, ForceMode2D.Impulse);
-                //    //transform.position += ((Vector3.right + Vector3.up) * Time.deltaTime * Speed);
-                //}
-                //else
-                //{
-                //    rigid.AddForce(Vector3.up * Speed, ForceMode2D.Impulse);
-                //    //transform.position += ((Vector3.left + Vector3.up) * Time.deltaTime * Speed);
-                //}
-                rigid.AddForce(Vector3.up * Speed, ForceMode2D.Impulse);
-                State = EnemyState.Walk;
+                if (!IsJump)
+                {
+                    rigid.velocity = Vector2.zero;
+                    rigid.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
+                    IsJump = true;
+                    anime.SetBool("IsJump", true);
+                }
+                else
+                {
+                    if (rigid.velocity.y < 0)
+                    {
+                        if (transform.localScale.x > 0)
+                        {
+                            //rigid.velocity = Vector3.zero;
+                            rigid.MovePosition(transform.position + ((Vector3.right + Vector3.down) * Time.deltaTime * jumpSpeed * 2));
+                        }
+                        else
+                        {
+                            //rigid.velocity = Vector3.zero;
+                            rigid.MovePosition(transform.position + ((Vector3.left + Vector3.down) * Time.deltaTime * jumpSpeed * 2));
+                        }
+                        //IsJump = false;
+                        IsFlyKick = true;
+                        anime.SetBool("IsFlyAttack",true);
+                    }
+                }
+
+                if (transform.localPosition.y == -4 && IsFlyKick)
+                {
+                
+                    State = EnemyState.Walk;
+                    IsFlyKick = false;
+                    IsJump = false;
+
+                    anime.SetBool("IsJump", false);
+                    anime.SetBool("IsFlyAttack", false);
+                }
                 break;
 
             case EnemyState.Coll:
-                break;
+                collider.enabled = false;
 
+                if (transform.position.y == -4)
+                {
+                    invincibility += Time.deltaTime;
+                    rigid.velocity = Vector2.zero;
+                }
+
+                if (invincibility > 1f)
+                {
+                    invincibility = 0;
+                    State = EnemyState.Walk;
+                    anime.SetBool("IsKnockOut", false);
+                    anime.SetBool("IsColl", false);
+                    IsKnockOut = false;
+                    collider.enabled = true;
+                }
+                break;
             case EnemyState.Dead:
                 break;
         }
@@ -117,7 +161,7 @@ public class EnemyMovement : MonoBehaviour
     {
         if (State == EnemyState.Walk)
         {
-            float Distance = Vector2.Distance(new Vector2(Player.transform.position.x, 0), new Vector2(transform.position.x, 0));
+            float Distance = Vector3.Distance(Player.transform.position, transform.position);
             if (Distance < 1.5f)
             {
                 anime.Rebind();
@@ -128,4 +172,59 @@ public class EnemyMovement : MonoBehaviour
         }
         yield return null;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "PlayerAttackColl" && State != EnemyState.Coll)
+        {
+            State = EnemyState.Coll;
+            if (IsJump)
+            {
+                IsFlyKick = false;
+                IsJump = false;
+                anime.SetBool("IsKnockOut", true);
+                IsKnockOut = true;
+                
+                if (Player.transform.localScale.x > 0)
+                {
+                    rigid.AddForce((Vector2.up + Vector2.right) * 3,ForceMode2D.Impulse);
+                }
+                else
+                {
+                    rigid.AddForce((Vector2.up + Vector2.left) * 3, ForceMode2D.Impulse);
+                }
+            }
+            else
+            {
+                anime.SetBool("IsColl", true);
+                IsKnockOut = false;
+            }
+
+            invincibility = 0;
+            anime.SetBool("IsJump", false);
+            anime.SetBool("IsFlyAttack", false);
+            anime.SetBool("IsAttack", false);
+        }
+    }
+    //private void OnTriggerStay2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.tag == "PlayerAttackColl")
+    //    {
+    //        State = EnemyState.Coll;
+    //        if (IsJump)
+    //        {
+    //            IsFlyKick = false;
+    //            IsJump = false;
+    //            anime.SetBool("IsKnockOut", true);
+    //        }
+    //        else
+    //        {
+    //            anime.SetBool("IsColl", true);
+    //        }
+    //
+    //        anime.SetBool("IsJump", false);
+    //        anime.SetBool("IsFlyAttack", false);
+    //        anime.SetBool("IsAttack", false);
+    //    }
+    //}
 }

@@ -9,13 +9,17 @@ public class PlayerMovement : MonoBehaviour
     public GameObject Image;
     public GameObject AttackColl;
 
+
     public float Speed = 5;
     public float JumpSpeed = 6;
 
-    [HideInInspector]public bool IsJump;
+    [HideInInspector] public bool IsJump;
+    [HideInInspector] public bool IsColl; 
     private bool IsFlyAttack;
     private bool IsAttack;
-    private bool IsSpin;
+    [HideInInspector] public bool IsSpin;
+
+    private float invincibility;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,60 +30,100 @@ public class PlayerMovement : MonoBehaviour
         IsFlyAttack = false;
         IsAttack = false;
         IsSpin = false;
+        IsColl = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (IsJump)
-            anime.SetBool("IsJump", true);
-        else
+        if (IsColl)
         {
             anime.SetBool("IsJump", false);
-            IsFlyAttack = false;
             anime.SetBool("IsFlyAttack", false);
-        }
+            anime.SetBool("IsSpin", false);
+            anime.SetBool("IsAttack", false);
+            anime.SetBool("IsMove", false);
+            IsSpin = false;
+            IsAttack = false;
+            IsFlyAttack = false;
 
-        if (!IsSpin && !IsFlyAttack && !IsAttack)
-            Move();
-        else if (IsSpin)
-        {
-            if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+            if (IsJump)
             {
-                transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
-                anime.SetBool("IsSpin", false);
-                IsSpin = false;
+                anime.SetBool("IsKnockOut", true);
             }
             else
             {
-                if (transform.localScale.x > 0)
-                    rigid.MovePosition(transform.position + (Vector3.right * Time.deltaTime * Speed));
+                anime.SetBool("IsColl", true);
+                anime.SetBool("IsGround", true);
+                invincibility += Time.deltaTime;
+            }
+
+            if (invincibility > 0.5f)
+            {
+                IsColl = false;
+                anime.SetBool("IsKnockOut", false);
+                anime.SetBool("IsColl", false);
+                anime.SetBool("IsGroundS", false);
+                invincibility = 0;
+            }
+        }
+        else
+        {
+            if (IsJump)
+                anime.SetBool("IsJump", true);
+            else
+            {
+                anime.SetBool("IsJump", false);
+                IsFlyAttack = false;
+                anime.SetBool("IsFlyAttack", false);
+            }
+
+            if (!IsSpin && !IsFlyAttack && !IsAttack)
+                Move();
+            else if (IsSpin)
+            {
+                if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+                {
+                    transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                    anime.SetBool("IsSpin", false);
+                    IsSpin = false;
+                }
                 else
-                    rigid.MovePosition(transform.position + (Vector3.left * Time.deltaTime * Speed));
+                {
+                    if (transform.localScale.x > 0)
+                        rigid.MovePosition(transform.position + (Vector3.right * Time.deltaTime * Speed));
+                    else
+                        rigid.MovePosition(transform.position + (Vector3.left * Time.deltaTime * Speed));
+                }
+            }
+            else if (IsFlyAttack)
+            {
+                AttackColl.SetActive(true);
+                if (transform.localScale.x > 0)
+                {
+                    rigid.velocity = Vector3.zero;
+                    rigid.MovePosition(transform.position + ((Vector3.right + Vector3.down) * Time.deltaTime * Speed * 2));
+                }
+                else
+                {
+                    rigid.velocity = Vector3.zero;
+                    rigid.MovePosition(transform.position + ((Vector3.left + Vector3.down) * Time.deltaTime * Speed * 2));
+                }
+            }
+            else if (IsAttack)
+            {
+                if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.99f)
+                {
+                    anime.SetBool("IsAttack", false);
+                    IsAttack = false;
+                }
+                else if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.4f)
+                {
+                    AttackColl.SetActive(true);
+                }
+               
             }
         }
-        else if (IsFlyAttack)
-        {
-            if (transform.localScale.x > 0)
-            {
-                rigid.velocity = Vector3.zero;
-                rigid.MovePosition(transform.position + ((Vector3.right + Vector3.down) * Time.deltaTime * Speed * 2));
-            }
-            else
-            {
-                rigid.velocity = Vector3.zero;
-                rigid.MovePosition(transform.position + ((Vector3.left + Vector3.down) * Time.deltaTime * Speed * 2));
-            }
-        }
-        else if (IsAttack)
-        {
-            if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.99f)
-            {
-                anime.SetBool("IsAttack", false);
-                IsAttack = false;
-            }
-        }
-
     }
 
     void Move() {
@@ -117,7 +161,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.X) && !IsAttack)
         {
-            AttackColl.SetActive(true);
             if (IsJump)
             {
                 anime.SetBool("IsFlyAttack", true);
@@ -131,4 +174,12 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
+    //private void OnTriggerStay2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.tag == "")
+    //    {
+    //
+    //    }
+    //}
 }

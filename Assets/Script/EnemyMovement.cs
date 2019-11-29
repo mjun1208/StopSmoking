@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyMovement : MonoBehaviour
 {
     public GameObject Player;
+    private PlayerMovement playermovement;
     public float Speed = 3;
     public float jumpSpeed = 8;
     private Vector2 Target;
@@ -34,6 +35,7 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playermovement = Player.GetComponent<PlayerMovement>();
         State = EnemyState.Walk;
         rigid = GetComponent<Rigidbody2D>();
         anime = GetComponent<Animator>();
@@ -134,22 +136,24 @@ public class EnemyMovement : MonoBehaviour
                 break;
 
             case EnemyState.Coll:
-                collider.enabled = false;
+                //collider.enabled = false;
 
                 if (transform.position.y == -4)
                 {
                     invincibility += Time.deltaTime;
-                    rigid.velocity = Vector2.zero;
+                    if (IsKnockOut)
+                        rigid.velocity = Vector2.zero;
                 }
 
                 if (invincibility > 1f)
                 {
+                    rigid.velocity = Vector2.zero;
                     invincibility = 0;
                     State = EnemyState.Walk;
                     anime.SetBool("IsKnockOut", false);
                     anime.SetBool("IsColl", false);
                     IsKnockOut = false;
-                    collider.enabled = true;
+                    //collider.enabled = true;
                 }
                 break;
             case EnemyState.Dead:
@@ -198,6 +202,15 @@ public class EnemyMovement : MonoBehaviour
             {
                 anime.SetBool("IsColl", true);
                 IsKnockOut = false;
+
+                if (Player.transform.localScale.x > 0)
+                {
+                    rigid.AddForce(Vector2.right * 5, ForceMode2D.Impulse);
+                }
+                else
+                {
+                    rigid.AddForce(Vector2.left * 5, ForceMode2D.Impulse);
+                }
             }
 
             invincibility = 0;
@@ -205,26 +218,19 @@ public class EnemyMovement : MonoBehaviour
             anime.SetBool("IsFlyAttack", false);
             anime.SetBool("IsAttack", false);
         }
+        else if (collision.gameObject.tag == "Wall" && State == EnemyState.Coll)
+        {
+            rigid.velocity = Vector2.zero;
+        }
     }
-    //private void OnTriggerStay2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.tag == "PlayerAttackColl")
-    //    {
-    //        State = EnemyState.Coll;
-    //        if (IsJump)
-    //        {
-    //            IsFlyKick = false;
-    //            IsJump = false;
-    //            anime.SetBool("IsKnockOut", true);
-    //        }
-    //        else
-    //        {
-    //            anime.SetBool("IsColl", true);
-    //        }
-    //
-    //        anime.SetBool("IsJump", false);
-    //        anime.SetBool("IsFlyAttack", false);
-    //        anime.SetBool("IsAttack", false);
-    //    }
-    //}
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player" && !playermovement.IsColl && !playermovement.IsSpin)
+        {
+            if (IsFlyKick || State == EnemyState.Attack)
+            {
+                playermovement.IsColl = true;
+            }
+        }
+    }
 }

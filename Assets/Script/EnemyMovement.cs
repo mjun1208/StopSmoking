@@ -20,6 +20,10 @@ public class EnemyMovement : MonoBehaviour
     private bool IsJump;
     private bool IsFlyKick;
 
+    private int Hp = 100;
+    public GameObject HpEdge;
+    private SpriteRenderer HpGauge_SpriteRender;
+    
     private float invincibility;
     private bool IsKnockOut;
     private enum EnemyState
@@ -47,6 +51,9 @@ public class EnemyMovement : MonoBehaviour
         IsKnockOut = false;
 
         invincibility = 0;
+
+        HpGauge_SpriteRender = HpEdge.transform.GetChild(0).GetComponent<SpriteRenderer>();
+        Hp = 100;
     }
 
     // Update is called once per frame
@@ -71,10 +78,15 @@ public class EnemyMovement : MonoBehaviour
                 //rigid.MovePosition(transform.position + (new Vector3(Target.x , 0 , 0) * Speed * Time.deltaTime));
                 transform.position += (new Vector3(Target.x, 0, 0) * Time.deltaTime * Speed);
                 if (Target.x > 0)
+                {
                     transform.localScale = new Vector3(4.3f, 4.3f, 4.3f);
+                    HpEdge.transform.localScale = new Vector3(0.2f, HpEdge.transform.localScale.y, HpEdge.transform.localScale.z);
+                }
                 else
+                {
                     transform.localScale = new Vector3(-4.3f, 4.3f, 4.3f);
-
+                    HpEdge.transform.localScale = new Vector3(-0.2f, HpEdge.transform.localScale.y, HpEdge.transform.localScale.z);
+                }
 
                 if (DelayTime > RandomTime)
                 {
@@ -181,6 +193,10 @@ public class EnemyMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "PlayerAttackColl" && State != EnemyState.Coll)
         {
+            Hp -= 20;
+            if (Hp <= 0)
+                Hp = 0;
+            HpGauge_SpriteRender.size = new Vector2((Hp * 0.02f), 0.5f);
             State = EnemyState.Coll;
             if (IsJump)
             {
@@ -229,6 +245,16 @@ public class EnemyMovement : MonoBehaviour
         {
             if (IsFlyKick || State == EnemyState.Attack)
             {
+                playermovement.Hp -= 10;
+                playermovement.rigid.velocity = Vector2.zero;
+                if (transform.localScale.x > 0)
+                {
+                    playermovement.rigid.AddForce(Vector2.right * 5, ForceMode2D.Impulse);
+                }
+                else
+                {
+                    playermovement.rigid.AddForce(Vector2.left * 5, ForceMode2D.Impulse);
+                }
                 playermovement.IsColl = true;
             }
         }

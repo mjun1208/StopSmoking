@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D rigid;
+    [HideInInspector] public Rigidbody2D rigid;
     private Animator anime;
     public GameObject Image;
     public GameObject AttackColl;
@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private bool IsFlyAttack;
     private bool IsAttack;
     [HideInInspector] public bool IsSpin;
+    [HideInInspector] public int Hp = 100;
 
     private float invincibility;
     // Start is called before the first frame update
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
         IsAttack = false;
         IsSpin = false;
         IsColl = false;
+        Hp = 100;
     }
 
     // Update is called once per frame

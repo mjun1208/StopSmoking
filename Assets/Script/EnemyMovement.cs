@@ -71,6 +71,14 @@ public class EnemyMovement : MonoBehaviour
             transform.localPosition += Vector3.down * 0.1f;
         }
 
+        if (Hp <= 0 && State != EnemyState.Dead) 
+        {
+            anime.Rebind();
+            anime.SetBool("IsDead", true);
+            anime.speed = 0.1f;
+            State = EnemyState.Dead;
+        }
+
         switch (State)
         {
             case EnemyState.Walk:
@@ -149,7 +157,6 @@ public class EnemyMovement : MonoBehaviour
 
             case EnemyState.Coll:
                 //collider.enabled = false;
-
                 if (transform.position.y == -4)
                 {
                     invincibility += Time.deltaTime;
@@ -169,6 +176,14 @@ public class EnemyMovement : MonoBehaviour
                 }
                 break;
             case EnemyState.Dead:
+                if (transform.localPosition.y == -4)
+                {
+                    rigid.velocity = Vector2.zero;
+                    anime.speed = 0.7f; 
+
+                    if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+                        this.gameObject.SetActive(false);
+                }
                 break;
         }
     }
@@ -193,7 +208,10 @@ public class EnemyMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "PlayerAttackColl" && State != EnemyState.Coll)
         {
-            Hp -= 20;
+            if (!playermovement.IsJump)
+                Hp -= 20;
+            else
+                Hp -= 10;
             if (Hp <= 0)
                 Hp = 0;
             HpGauge_SpriteRender.size = new Vector2((Hp * 0.02f), 0.5f);

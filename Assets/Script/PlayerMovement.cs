@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
                 IsColl = false;
                 anime.SetBool("IsKnockOut", false);
                 anime.SetBool("IsColl", false);
-                anime.SetBool("IsGroundS", false);
+                anime.SetBool("IsGround", false);
                 invincibility = 0;
             }
         }
@@ -176,12 +176,4 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
-    //private void OnTriggerStay2D(Collider2D collision)
-    //{
-    //    if (collision.gameObject.tag == "")
-    //    {
-    //
-    //    }
-    //}
 }

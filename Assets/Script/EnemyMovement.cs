@@ -20,7 +20,7 @@ public class EnemyMovement : MonoBehaviour
     private bool IsJump;
     private bool IsFlyKick;
 
-    private int Hp = 100;
+    [HideInInspector] public int Hp = 100;
     public GameObject HpEdge;
     private SpriteRenderer HpGauge_SpriteRender;
     
@@ -56,9 +56,23 @@ public class EnemyMovement : MonoBehaviour
         Hp = 100;
     }
 
+    public void EnemyReset()
+    {
+        State = EnemyState.Walk;
+        DelayTime = 0;
+        RandomTime = Random.Range(0.3f, 1.5f);
+        IsJump = false;
+        IsFlyKick = false;
+        IsKnockOut = false;
+
+        invincibility = 0;
+        Hp = 100;
+    }
     // Update is called once per frame
     void Update()
     {
+        HpGauge_SpriteRender.size = new Vector2((Hp * 0.02f), 0.5f);
+
         Target = Player.transform.position - transform.position;
         Target.Normalize();
 
@@ -77,6 +91,7 @@ public class EnemyMovement : MonoBehaviour
             anime.SetBool("IsDead", true);
             anime.speed = 0.1f;
             State = EnemyState.Dead;
+            EnemyManager.instance.KillCount++;
         }
 
         switch (State)
@@ -214,7 +229,6 @@ public class EnemyMovement : MonoBehaviour
                 Hp -= 10;
             if (Hp <= 0)
                 Hp = 0;
-            HpGauge_SpriteRender.size = new Vector2((Hp * 0.02f), 0.5f);
             State = EnemyState.Coll;
             if (IsJump)
             {

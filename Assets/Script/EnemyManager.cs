@@ -4,18 +4,26 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    static public EnemyManager instance;
     public GameObject Player;
     private GameObject[] EnemyArray;
+    private EnemyMovement[] EnemyMovementArray;
 
     bool IsClear;
     bool IsAlive;
 
+    public int KillCount;
+
     private void Awake()
     {
+        instance = this;
+
         EnemyArray = new GameObject[transform.transform.childCount];
+        EnemyMovementArray = new EnemyMovement[transform.transform.childCount];
         for (int i = 0; i < EnemyArray.Length; i++)
         {
             EnemyArray[i] = transform.GetChild(i).gameObject;
+            EnemyMovementArray[i] = EnemyArray[i].GetComponent<EnemyMovement>();
         }
     }
     // Start is called before the first frame update
@@ -29,17 +37,36 @@ public class EnemyManager : MonoBehaviour
             else
                 EnemyArray[i].transform.position = new Vector3(-16, -4, 0);
         }
+        IsClear = false;
+        KillCount = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        IsAlive = true;
-        for (int i = 0; i < EnemyArray.Length; i++)
+        if (KillCount < 20)
         {
-            if (EnemyArray[i].activeSelf)
+            IsAlive = true;
+            for (int i = 0; i < EnemyArray.Length; i++)
             {
-                IsAlive = false;
+                if (EnemyArray[i].activeSelf)
+                {
+                    IsAlive = false;
+                }
+            }
+
+            if (IsAlive && !IsClear)
+            {
+                IsClear = true;
+                StartCoroutine(SpawnEnemy());
+            }
+        }
+        else
+        {
+            for (int i = 0; i < EnemyArray.Length; i++)
+            {
+                //EnemyArray[i].SetActive(false);
+                EnemyMovementArray[i].Hp = 0;
             }
         }
     }
@@ -49,11 +76,13 @@ public class EnemyManager : MonoBehaviour
         for (int i = 0; i < EnemyArray.Length; i++)
         {
             EnemyArray[i].SetActive(true);
+            EnemyMovementArray[i].EnemyReset();
             if (Random.Range(0, 2) == 0)
                 EnemyArray[i].transform.position = new Vector3(16, -4, 0);
             else
                 EnemyArray[i].transform.position = new Vector3(-16, -4, 0);
         }
+        IsClear = false;
         yield return new WaitForSeconds(0.2f);
     } 
 }

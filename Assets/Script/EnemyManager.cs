@@ -6,6 +6,7 @@ public class EnemyManager : MonoBehaviour
 {
     static public EnemyManager instance;
     public GameObject Player;
+    public GameObject GreenEnemy; 
     private GameObject[] EnemyArray;
     private EnemyMovement[] EnemyMovementArray;
 
@@ -38,7 +39,7 @@ public class EnemyManager : MonoBehaviour
                 EnemyArray[i].transform.position = new Vector3(-16, -4, 0);
         }
         IsClear = false;
-        KillCount = 0;
+        //KillCount = 0;
     }
 
     // Update is called once per frame
@@ -63,6 +64,7 @@ public class EnemyManager : MonoBehaviour
         }
         else
         {
+            GreenEnemy.SetActive(true);
             for (int i = 0; i < EnemyArray.Length; i++)
             {
                 //EnemyArray[i].SetActive(false);

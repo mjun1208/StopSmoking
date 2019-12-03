@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class EnemyHpGauge : MonoBehaviour
 {
     private Image HPGaugeImage;
+    public GreenEnemyMovement enemyMovement;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,6 +16,9 @@ public class EnemyHpGauge : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HPGaugeImage.fillAmount = EnemyManager.instance.KillCount * 0.05f;
+        if (EnemyManager.instance.KillCount < 20)
+            HPGaugeImage.fillAmount = EnemyManager.instance.KillCount * 0.05f;
+        else
+            HPGaugeImage.fillAmount = enemyMovement.Hp * 0.01f;
     }
 }

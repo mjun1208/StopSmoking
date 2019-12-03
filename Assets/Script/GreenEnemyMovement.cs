@@ -19,7 +19,6 @@ public class GreenEnemyMovement : MonoBehaviour
     public float jumpSpeed = 8;
 
     private Vector2 Target;
-    private Vector2 Dir;
 
     private float DelayTime;
     private float RandomTime;
@@ -32,6 +31,16 @@ public class GreenEnemyMovement : MonoBehaviour
     private bool IsJump;
     private bool IsDown;
     private bool RandomDir;
+
+    private bool IsInvincibility;
+
+    public GameObject PinkCiga;
+    private PinkCiga PinkCiga_Script;
+    public GameObject Bullet;
+    private Bullet Bullet_Script;
+    public GreenEnemySmokeManager SmokeManager;
+
+    private bool IsFirst;
     //private bool IsDown;
     // Start is called before the first frame update
     void Start()
@@ -47,6 +56,12 @@ public class GreenEnemyMovement : MonoBehaviour
         RandomTime = Random.Range(0.3f, 1.0f);
         IsJump = false;
         IsDown = false;
+        IsInvincibility = false;
+
+        IsFirst = false;
+
+        PinkCiga_Script = PinkCiga.GetComponent<PinkCiga>();
+        Bullet_Script = Bullet.GetComponent<Bullet>();
     }
 
     // Update is called once per frame
@@ -54,6 +69,7 @@ public class GreenEnemyMovement : MonoBehaviour
     {
         Target = Player.transform.position - transform.position;
         Target.Normalize();
+
 
         if (transform.localPosition.y < -4)
         {
@@ -72,14 +88,18 @@ public class GreenEnemyMovement : MonoBehaviour
         {
             transform.localScale = new Vector3(-4.3f, 4.3f, 4.3f);
         }
-        //if ()
-        Debug.Log(rigid.velocity);
         switch (State)
         {
             case GreenEnemyState.Idle:
                 rigid.velocity = Vector2.zero;
                 DelayTime += Time.deltaTime;
-                if (DelayTime > RandomTime && transform.localPosition.y == -4)
+
+                anime.SetBool("IsJump", false);
+                anime.SetBool("IsShoot", false);
+                anime.SetBool("IsSpawnCiga", false);
+                anime.SetBool("IsSpawnSmoke", false);
+                anime.Rebind();
+                if (DelayTime > RandomTime && transform.localPosition.y == -4 && anime.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
                 {
                     if (Random.Range(0, 2) == 0)
                     {
@@ -129,9 +149,18 @@ public class GreenEnemyMovement : MonoBehaviour
                 }
                 break;
             case GreenEnemyState.Shoot:
+                if (!IsFirst)
+                {
+                    anime.Rebind();
+                    IsFirst = true;
+                    Bullet.transform.localPosition = this.gameObject.transform.localPosition;
+                    Bullet_Script.Dir = new Vector2(Target.x, 0);
+                }
+
+                Bullet.SetActive(true);
                 rigid.velocity = Vector2.zero;
                 anime.SetBool("IsShoot", true);
-                if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+                if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f && anime.GetCurrentAnimatorStateInfo(0).IsName("Shoot"))
                 {
                     if (transform.localPosition.y == -4)
                     {
@@ -141,18 +170,43 @@ public class GreenEnemyMovement : MonoBehaviour
                 }
                 break;
             case GreenEnemyState.SpawnSmoke:
+                if (!IsFirst)
+                {
+                    anime.Rebind();
+                    IsFirst = true;
+                }
+
                 rigid.velocity = Vector2.zero;
                 if (transform.localPosition.y == -4)
                 {
                     anime.SetBool("IsSpawnSmoke", true);
-                    if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+                    if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f && anime.GetCurrentAnimatorStateInfo(0).IsName("SpawnSmoke"))
+                    {
                         State = GreenEnemyState.Idle;
+                        IsInvincibility = false;
+                    }
+                    else if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.6f && anime.GetCurrentAnimatorStateInfo(0).IsName("SpawnSmoke"))
+                    {
+                        IsInvincibility = true;
+                        SmokeManager.SpawnSmoke();
+                    }
+
+                    //Debug.Log(anime.GetCurrentAnimatorStateInfo(0).normalizedTime);
                 }
                 break;
             case GreenEnemyState.SpawnCiga:
+                if (!IsFirst)
+                {
+                    anime.Rebind();
+                    IsFirst = true;
+                    PinkCiga.transform.localPosition = this.gameObject.transform.localPosition;
+                    PinkCiga_Script.Dir = new Vector2(Target.x, 0);
+                }
+
                 rigid.velocity = Vector2.zero;
                 anime.SetBool("IsSpawnCiga", true);
-                if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f)
+                PinkCiga.SetActive(true);
+                if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f && anime.GetCurrentAnimatorStateInfo(0).IsName("SpawnCiga"))
                 {
                     if (transform.localPosition.y == -4)
                     {
@@ -168,9 +222,10 @@ public class GreenEnemyMovement : MonoBehaviour
 
     private IEnumerator SetAttack()
     {
+        anime.Rebind();
+        IsFirst = false;
         if (State == GreenEnemyState.Idle || State == GreenEnemyState.Jump)
         {
-            anime.Rebind();
             if (State == GreenEnemyState.Idle)
             {
                 switch (Random.Range(0, 3))
@@ -210,6 +265,19 @@ public class GreenEnemyMovement : MonoBehaviour
                 rigid.velocity = new Vector2(0, rigid.velocity.y);
             if (transform.localPosition.x > 0 && rigid.velocity.x > 0)
                 rigid.velocity = new Vector2(0, rigid.velocity.y);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "PlayerAttackColl" && !IsInvincibility)
+        {
+            if (!playerMovement.IsJump)
+                Hp -= 4;
+            else
+                Hp -= 2;
+            if (Hp <= 0)
+                Hp = 0;
         }
     }
 }

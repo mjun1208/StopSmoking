@@ -65,7 +65,6 @@ public class PlayerMovement : MonoBehaviour
                 IsColl = false;
                 anime.SetBool("IsKnockOut", false);
                 anime.SetBool("IsColl", false);
-                anime.SetBool("IsGround", false);
                 invincibility = 0;
             }
         }

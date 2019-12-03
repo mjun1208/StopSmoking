@@ -69,6 +69,7 @@
     <Compile Include="Assets\Script\EnemyHpGauge.cs" />
     <Compile Include="Assets\Script\EnemyManager.cs" />
     <Compile Include="Assets\Script\EnemyMovement.cs" />
+    <Compile Include="Assets\Script\GreenEnemyMovement.cs" />
     <Compile Include="Assets\Script\Mark.cs" />
     <Compile Include="Assets\Script\PlayerCheckGround.cs" />
     <Compile Include="Assets\Script\PlayerHpGauge.cs" />

@@ -112,7 +112,6 @@ public class TalkBoxText2 : MonoBehaviour
     {
         IsDone = false;
         IsNext = false;
-
         if (Texts.Length <= i_NowText)
         {
             ChangeScene.instance.Change_Scene("Ingame2");

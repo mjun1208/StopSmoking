@@ -19,6 +19,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip Talk_Sans;
     public AudioClip Talk_Al;
     public AudioClip Talk_Pa;
+    public AudioClip PlayerDead;
     void Awake()
     {
         instance = this;
@@ -32,7 +33,7 @@ public class SoundManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void PlayHit()
@@ -91,5 +92,10 @@ public class SoundManager : MonoBehaviour
     public void PlayTalk_Pa()
     {
         Sound.PlayOneShot(Talk_Pa);
+    }
+
+    public void PlayPlayerDead()
+    {
+        Sound.PlayOneShot(PlayerDead);
     }
 }

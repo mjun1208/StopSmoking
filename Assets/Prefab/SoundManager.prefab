@@ -152,3 +152,4 @@ MonoBehaviour:
   Talk_Sans: {fileID: 8300000, guid: 25b0e0964e4109041b75904ed2dce609, type: 3}
   Talk_Al: {fileID: 8300000, guid: ec3bb73f2e27d5e42a88c01a747c75bb, type: 3}
   Talk_Pa: {fileID: 8300000, guid: d260154fa50071d4aad423fd822f30dd, type: 3}
+  PlayerDead: {fileID: 8300000, guid: a68215e401b64504896334a6d7cbf1cf, type: 3}

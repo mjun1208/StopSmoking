@@ -19,6 +19,8 @@ public class TalkBoxText4 : MonoBehaviour
     private bool IsDone;
     private bool IsNext;
 
+    private bool IsClear;
+
     [HideInInspector] public bool CanNext;
 
     private void Awake()
@@ -32,15 +34,27 @@ public class TalkBoxText4 : MonoBehaviour
             // 1 = 적
         }
 
-        Texts = new string[5];
+        Texts = new string[7];
 
         Texts[0] = "아닛..? 어째서..?";
-        Texts[1] = "니코틴 중독..";
-        Texts[2] = "?!!";
-        Texts[3] = "후두암 위험, 최대 16배";
-        Texts[4] = "?????";
-        Texts[5] = "뇌졸중 위험, 최대 4배";
-        Texts[6] = "심장병 사망, 최대 4배";
+        Texts[1] = "아직도 깨닫지 못한건가?";
+        Texts[2] = "???!!!";
+        //Texts[1] = "매년 600만명 사망..";
+        //Texts[2] = "니코틴 중독..";
+        //Texts[3] = "?!!";
+        //Texts[4] = "4천 가지 이상의 화학물질 속 69가지는 발암물질..";
+        //Texts[5] = "폐암 위험, 4.6배";
+        //Texts[6] = "후두암 위험, 6.5배";
+        //Texts[7] = "구강암 위험, 4.6배";
+        //Texts[8] = "식도암 위험, 3.6배";
+        //Texts[9] = "방광암 위험, 2.6배";
+        //Texts[10] = "???!@#!@#!#??";
+        //Texts[11] = "뇌졸중 위험, 4배";
+        //Texts[12] = "심장병 사망, 4배";
+        Texts[3] = "넌 이미 흡연으로 인해 약해져 있었다..";
+        Texts[4] = "크윽.. 내가 이렇게 위험한 것을 하고 있었다니..";
+        Texts[5] = "이제 깨달았으면 금연을 하여라..";
+        Texts[6] = "알겠습니다.. 흑흑";
         textCount = 0;
     }
     // Start is called before the first frame update
@@ -59,44 +73,54 @@ public class TalkBoxText4 : MonoBehaviour
         }
         IsDone = false;
         CanNext = true;
+        IsClear = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-            ChangeScene.instance.Change_Scene("Ingame3");
-
-        if (Input.anyKeyDown && IsDone)
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        //    ChangeScene.instance.Change_Scene("Ingame3");
+        if (IsClear)
         {
-            IsNext = true;
-            if (i_NowText == 7)
-                ChangeScene.instance.Change_Scene("Ingame3");
+            Intro4.instance.Scene_2();
         }
-
-        if (IsNext && CanNext)
+        else
         {
-            i_NowText++;
-
-            switch (i_NowText)
+            if (Input.anyKeyDown && IsDone)
             {
-                case 0:
-                case 2:
-                case 4:
-                    ChangeHead(0);
-                    break;
-                case 1:
-                case 3:
-                    ChangeHead(1);
-                    break;
+                IsNext = true;
             }
-            NextText();
+
+            if (IsNext && CanNext)
+            {
+                i_NowText++;
+
+                switch (i_NowText)
+                {
+                    case 0:
+                    case 2:
+                    case 4:
+                    case 6:
+                        ChangeHead(1);
+                        break;
+                    case 1:
+                    case 3:
+                    case 5:
+                        ChangeHead(0);
+                        break;
+                }
+                NextText();
+            }
+            else if (IsNext && !CanNext)
+            {
+                ActiveFalse();
+                if (i_NowText == 2)
+                    Intro4.instance.Scene_1();
+            }
+            if (i_NowText != 2)
+                CanNext = true;
         }
-        else if (IsNext && !CanNext)
-        {
-            ActiveFalse();
-        }
-        CanNext = true;
     }
 
     void NextText()
@@ -106,7 +130,9 @@ public class TalkBoxText4 : MonoBehaviour
 
         if (Texts.Length <= i_NowText)
         {
-            ChangeScene.instance.Change_Scene("Ingame3");
+            IsClear = true;
+            //Intro4.instance.Scene_2();
+            //ChangeScene.instance.Change_Scene("Ingame3");
             Debug.Log("OK");
         }
         else

@@ -26,7 +26,9 @@ public class GreenEnemyMovement : MonoBehaviour
     public GameObject Player;
     private PlayerMovement playerMovement;
 
-    [HideInInspector] public int Hp = 100;
+    public int Hp = 100;
+
+    public string NextScene = "Intro2";
 
     private bool IsJump;
     private bool IsDown;
@@ -50,7 +52,6 @@ public class GreenEnemyMovement : MonoBehaviour
         playerMovement = Player.GetComponent<PlayerMovement>();
 
         State = GreenEnemyState.Jump;
-        Hp = 100;
 
         DelayTime = 0;
         RandomTime = Random.Range(0.3f, 1.0f);
@@ -70,6 +71,10 @@ public class GreenEnemyMovement : MonoBehaviour
         Target = Player.transform.position - transform.position;
         Target.Normalize();
 
+        if (Hp <= 0)
+        {
+            ChangeScene.instance.Change_Scene(NextScene);
+        }
 
         if (transform.localPosition.y < -4)
         {

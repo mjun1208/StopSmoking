@@ -1521,8 +1521,8 @@ MonoBehaviour:
   Speed: 3
   jumpSpeed: 10
   Player: {fileID: 1384587861}
-  Hp: 100
-  NextScene: Intro2
+  Hp: 20
+  NextScene: Intro3
   PinkCiga: {fileID: 2066909883}
   Bullet: {fileID: 1821472637}
   SmokeManager: {fileID: 175223137}

@@ -81,6 +81,7 @@
     <Compile Include="Assets\Script\Intro2\Intro2.cs" />
     <Compile Include="Assets\Script\Intro2\IntroGreenEnemy.cs" />
     <Compile Include="Assets\Script\Intro2\TalkBoxText2.cs" />
+    <Compile Include="Assets\Script\Intro3\TalkBoxText3.cs" />
     <Compile Include="Assets\Script\Mark.cs" />
     <Compile Include="Assets\Script\PinkCiga.cs" />
     <Compile Include="Assets\Script\PlayerCheckGround.cs" />

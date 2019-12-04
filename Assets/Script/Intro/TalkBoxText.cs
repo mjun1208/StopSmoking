@@ -38,23 +38,11 @@ public class TalkBoxText : MonoBehaviour
         // NowScene 0 0
         Texts[0] = "하하 나는 화이트맨, 담배를 싫어하지.";
         Texts[1] = "오늘도 길거리에서 담배를 피는 사람을 혼내줘야겠군.";
-
-        // NowScene 1 0
         Texts[2] = "앗 바로 발견...!";
-
-        // NowScene 2 2
         Texts[3] = "낄낄 흡연 너무 좋아!";
-
-        // NowScene 3 0
         Texts[4] = "감히 길거리에서 담배를 피우다니 용서하지 않겠다!!";
-
-        // NowScene 4 2
         Texts[5] = "낄낄 너는 우리를 막을 수 없다!!";
-
-        // NowScene 5 2
         Texts[6] = "간접흡연으로 까맣게 만들어주지.. 낄낄";
-
-        // NowScene 6 1
         Texts[7] = "으악!! 감히...! 용서못해..!!";
         textCount = 0;
 
@@ -89,8 +77,6 @@ public class TalkBoxText : MonoBehaviour
             if (i_NowText == 7)
                 ChangeScene.instance.Change_Scene("Ingame");
         }
-
-        Debug.Log(i_NowText);
 
         if (IsNext && CanNext)
         {
@@ -178,6 +164,10 @@ public class TalkBoxText : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         if (NowText.Length - textCount > 0)
         {
+            if(Heads[0].activeSelf || Heads[1].activeSelf)
+                SoundManager.instance.PlayTalk_Sans();
+            else
+                SoundManager.instance.PlayTalk_Al();
             textUI.text += NowText[textCount++];
             StartCoroutine(Typing());
         }

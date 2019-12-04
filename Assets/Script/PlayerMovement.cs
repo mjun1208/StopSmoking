@@ -159,6 +159,7 @@ public class PlayerMovement : MonoBehaviour
             anime.Rebind();
             anime.SetBool("IsSpin", true);
             IsSpin = true;
+            SoundManager.instance.PlaySpin();
         }
         else if (Input.GetKeyDown(KeyCode.X) && !IsAttack)
         {
@@ -172,6 +173,7 @@ public class PlayerMovement : MonoBehaviour
                 anime.Rebind();
                 anime.SetBool("IsAttack", true);
                 IsAttack = true;
+                SoundManager.instance.PlayAxeSwing();
             }
         }
     }

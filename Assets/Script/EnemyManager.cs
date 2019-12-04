@@ -6,7 +6,6 @@ public class EnemyManager : MonoBehaviour
 {
     static public EnemyManager instance;
     public GameObject Player;
-    public GameObject GreenEnemy; 
     private GameObject[] EnemyArray;
     private EnemyMovement[] EnemyMovementArray;
 
@@ -14,6 +13,7 @@ public class EnemyManager : MonoBehaviour
     bool IsAlive;
 
     public int KillCount;
+
 
     private void Awake()
     {
@@ -64,7 +64,7 @@ public class EnemyManager : MonoBehaviour
         }
         else
         {
-            GreenEnemy.SetActive(true);
+            Invoke("SceneChange", 1.5f);
             for (int i = 0; i < EnemyArray.Length; i++)
             {
                 //EnemyArray[i].SetActive(false);
@@ -86,5 +86,10 @@ public class EnemyManager : MonoBehaviour
         }
         IsClear = false;
         yield return new WaitForSeconds(0.2f);
-    } 
+    }
+
+    void SceneChange()
+    {
+        ChangeScene.instance.Change_Scene("Intro2");
+    }
 }

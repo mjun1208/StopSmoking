@@ -29,6 +29,7 @@ public class Smoke : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player" && !playerMovement.IsColl && !playerMovement.IsSpin)
         {
+            SoundManager.instance.PlayHit2();
             playerMovement.Hp -= 5;
             playerMovement.rigid.velocity = Vector2.zero;
             if (Random.Range(0,2) == 0)

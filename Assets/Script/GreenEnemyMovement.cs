@@ -118,6 +118,7 @@ public class GreenEnemyMovement : MonoBehaviour
             case GreenEnemyState.Jump:
                 if (!IsJump)
                 {
+                    SoundManager.instance.PlayJump();
                     rigid.velocity = Vector2.zero;
                     if (Random.Range(0, 2) == 0)
                         RandomDir = true;
@@ -151,6 +152,7 @@ public class GreenEnemyMovement : MonoBehaviour
             case GreenEnemyState.Shoot:
                 if (!IsFirst)
                 {
+                    SoundManager.instance.PlaySwing();
                     anime.Rebind();
                     IsFirst = true;
                     Bullet.transform.localPosition = this.gameObject.transform.localPosition;
@@ -188,6 +190,7 @@ public class GreenEnemyMovement : MonoBehaviour
                     else if (anime.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.6f && anime.GetCurrentAnimatorStateInfo(0).IsName("SpawnSmoke"))
                     {
                         IsInvincibility = true;
+                        SoundManager.instance.PlayFart();
                         SmokeManager.SpawnSmoke();
                     }
 
@@ -197,6 +200,7 @@ public class GreenEnemyMovement : MonoBehaviour
             case GreenEnemyState.SpawnCiga:
                 if (!IsFirst)
                 {
+                    SoundManager.instance.PlaySwing();
                     anime.Rebind();
                     IsFirst = true;
                     PinkCiga.transform.localPosition = this.gameObject.transform.localPosition;
@@ -272,6 +276,7 @@ public class GreenEnemyMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "PlayerAttackColl" && !IsInvincibility)
         {
+            SoundManager.instance.PlayHit();
             if (!playerMovement.IsJump)
                 Hp -= 10;
             else

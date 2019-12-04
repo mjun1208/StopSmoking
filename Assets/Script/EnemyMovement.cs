@@ -92,6 +92,7 @@ public class EnemyMovement : MonoBehaviour
             anime.speed = 0.1f;
             State = EnemyState.Dead;
             EnemyManager.instance.KillCount++;
+            SoundManager.instance.PlayDead();
         }
 
         switch (State)
@@ -133,6 +134,7 @@ public class EnemyMovement : MonoBehaviour
             case EnemyState.Jump:
                 if (!IsJump)
                 {
+                    SoundManager.instance.PlayJump();
                     rigid.velocity = Vector2.zero;
                     rigid.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
                     IsJump = true;
@@ -212,6 +214,7 @@ public class EnemyMovement : MonoBehaviour
             {
                 anime.Rebind();
                 State = EnemyState.Attack;
+                SoundManager.instance.PlayStab();
             }
             else
                 State = EnemyState.Jump;
@@ -223,8 +226,11 @@ public class EnemyMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "PlayerAttackColl" && State != EnemyState.Coll)
         {
+            SoundManager.instance.PlayHit();
             if (!playermovement.IsJump)
+            {
                 Hp -= 40;
+            }
             else
                 Hp -= 20;
             if (Hp <= 0)
@@ -277,6 +283,7 @@ public class EnemyMovement : MonoBehaviour
         {
             if (IsFlyKick || State == EnemyState.Attack)
             {
+                SoundManager.instance.PlayHit2();
                 playermovement.Hp -= 10;
                 playermovement.rigid.velocity = Vector2.zero;
                 if (transform.localScale.x > 0)

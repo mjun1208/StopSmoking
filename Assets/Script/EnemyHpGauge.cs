@@ -16,9 +16,11 @@ public class EnemyHpGauge : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (EnemyManager.instance.KillCount < 20)
+        if (EnemyManager.instance != null && EnemyManager.instance.KillCount < 20)
             HPGaugeImage.fillAmount = EnemyManager.instance.KillCount * 0.05f;
-        else
+        else if (enemyMovement != null)
             HPGaugeImage.fillAmount = enemyMovement.Hp * 0.01f;
+        else
+            HPGaugeImage.fillAmount = EnemyManager.instance.KillCount * 0.05f;
     }
 }

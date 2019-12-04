@@ -17,7 +17,7 @@ public class IntroEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Text.i_NowText >= 5 && Text.i_NowText <= 6)
+        if (Text.i_NowText >= 4 && Text.i_NowText <= 6)
         {
             Dir = Target.transform.position - transform.position;
             Dir.Normalize();
@@ -27,5 +27,7 @@ public class IntroEnemy : MonoBehaviour
             else
                 transform.localScale = new Vector3(4.3f, 4.3f, 4.3f);
         }
+        //else
+        //    Target = null;
     }
 }

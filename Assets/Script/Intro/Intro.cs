@@ -8,12 +8,15 @@ public class Intro : MonoBehaviour
 
     public TalkBoxText TalkBox;
     public GameObject Enemys;
+    public GameObject Smokes;
     public GameObject Players;
 
     public GameObject WhitePlayer;
     public GameObject Player;
 
     private Animator Whiteanime;
+
+    private float DelayTime;
 
     private void Awake()
     {
@@ -53,6 +56,36 @@ public class Intro : MonoBehaviour
         else
         {
             TalkBox.CanNext = true;
+        }
+    }
+
+    public void Scene_3()
+    {
+        if (Enemys.transform.position.x > WhitePlayer.transform.position.x)
+        {
+            Enemys.transform.position -= new Vector3(1, 0, 0) * 0.2f;
+        }
+        else
+        {
+            Scene_4();
+        }
+    }
+
+    public void Scene_4()
+    {
+        Smokes.SetActive(true);
+
+        DelayTime += Time.deltaTime;
+        if (DelayTime > 2.5f)
+        {
+            Smokes.SetActive(false);
+            TalkBox.CanNext = true;
+            Player.SetActive(true);
+        }
+        else if (DelayTime > 2.0f)
+        {
+            WhitePlayer.SetActive(false);
+            Player.SetActive(true);   
         }
     }
 }

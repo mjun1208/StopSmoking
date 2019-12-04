@@ -224,9 +224,9 @@ public class EnemyMovement : MonoBehaviour
         if (collision.gameObject.tag == "PlayerAttackColl" && State != EnemyState.Coll)
         {
             if (!playermovement.IsJump)
-                Hp -= 20;
+                Hp -= 40;
             else
-                Hp -= 10;
+                Hp -= 20;
             if (Hp <= 0)
                 Hp = 0;
             State = EnemyState.Coll;

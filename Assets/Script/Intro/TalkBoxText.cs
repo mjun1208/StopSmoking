@@ -43,7 +43,7 @@ public class TalkBoxText : MonoBehaviour
         Texts[2] = "앗 바로 발견...!";
 
         // NowScene 2 2
-        Texts[3] = "낄낄 흡연너무 좋아!";
+        Texts[3] = "낄낄 흡연 너무 좋아!";
 
         // NowScene 3 0
         Texts[4] = "감히 길거리에서 담배를 피우다니 용서하지 않겠다!!";
@@ -80,9 +80,14 @@ public class TalkBoxText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            ChangeScene.instance.Change_Scene("Ingame");
+
         if (Input.anyKeyDown && IsDone)
         {
             IsNext = true;
+            if (i_NowText == 7)
+                ChangeScene.instance.Change_Scene("Ingame");
         }
 
         Debug.Log(i_NowText);
@@ -118,6 +123,8 @@ public class TalkBoxText : MonoBehaviour
                 Intro.instance.Scene_1();
             if (i_NowText == 2)
                 Intro.instance.Scene_2();
+            if (i_NowText == 6)
+                Intro.instance.Scene_3();
         }
 
        if (i_NowText == 0 || i_NowText == 3 || i_NowText == 4 || i_NowText == 5)

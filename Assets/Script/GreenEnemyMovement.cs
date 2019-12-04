@@ -273,9 +273,9 @@ public class GreenEnemyMovement : MonoBehaviour
         if (collision.gameObject.tag == "PlayerAttackColl" && !IsInvincibility)
         {
             if (!playerMovement.IsJump)
-                Hp -= 4;
+                Hp -= 10;
             else
-                Hp -= 2;
+                Hp -= 5;
             if (Hp <= 0)
                 Hp = 0;
         }

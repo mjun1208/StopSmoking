@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-public class TalkBoxText3 : MonoBehaviour
+public class TalkBoxText4 : MonoBehaviour
 {
     public string[] Texts;
     public GameObject[] Heads;
@@ -34,11 +34,13 @@ public class TalkBoxText3 : MonoBehaviour
 
         Texts = new string[5];
 
-        Texts[0] = "하하 별것도 아니군ㅋ.";
-        Texts[1] = "이..이럴순 없어!!";
+        Texts[0] = "아닛..? 어째서..?";
+        Texts[1] = "니코틴 중독..";
         Texts[2] = "?!!";
-        Texts[3] = "이대론 질 수 없지.. 2차전이다!!";
-        Texts[4] = "허걱";
+        Texts[3] = "후두암 위험, 최대 16배";
+        Texts[4] = "?????";
+        Texts[5] = "뇌졸중 위험, 최대 4배";
+        Texts[6] = "심장병 사망, 최대 4배";
         textCount = 0;
     }
     // Start is called before the first frame update

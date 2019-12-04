@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class EnemyHpGauge : MonoBehaviour
 {
@@ -19,7 +20,12 @@ public class EnemyHpGauge : MonoBehaviour
         if (EnemyManager.instance != null && EnemyManager.instance.KillCount < 20)
             HPGaugeImage.fillAmount = EnemyManager.instance.KillCount * 0.05f;
         else if (enemyMovement != null)
-            HPGaugeImage.fillAmount = enemyMovement.Hp * 0.01f;
+        {
+            if (SceneManager.GetActiveScene().name == "Ingame2")
+                HPGaugeImage.fillAmount = enemyMovement.Hp * 0.01f;
+            else if (SceneManager.GetActiveScene().name == "Ingame3")
+                HPGaugeImage.fillAmount = enemyMovement.Hp * 0.05f;
+        }
         else
             HPGaugeImage.fillAmount = EnemyManager.instance.KillCount * 0.05f;
     }

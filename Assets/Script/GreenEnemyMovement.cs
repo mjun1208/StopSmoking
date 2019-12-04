@@ -28,7 +28,7 @@ public class GreenEnemyMovement : MonoBehaviour
 
     public int Hp = 100;
 
-    public string NextScene = "Intro2";
+    public string NextScene = "Intro3";
 
     private bool IsJump;
     private bool IsDown;

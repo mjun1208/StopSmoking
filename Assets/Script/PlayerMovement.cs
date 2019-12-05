@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using WindowsInput;
 public class PlayerMovement : MonoBehaviour
 {
     [HideInInspector] public Rigidbody2D rigid;
@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool IsSpin;
     [HideInInspector] public int Hp = 100;
 
+    private float FlyKickDelay = 0;
     private float invincibility;
     // Start is called before the first frame update
     void Start()
@@ -57,6 +58,9 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            if (WindowsInput.WindowsInput.GetKey(KeyCode.C))
+                Hp = 100;
+
             if (IsColl)
             {
                 anime.SetBool("IsJump", false);
@@ -150,14 +154,17 @@ public class PlayerMovement : MonoBehaviour
     void Move() {
         AttackColl.SetActive(false);
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (IsJump)
+            FlyKickDelay += Time.deltaTime;
+
+        if (WindowsInput.WindowsInput.GetKey(KeyCode.LeftArrow))
         {
             anime.SetBool("IsMove", true);
             transform.localScale = new Vector3(-4.3f, 4.3f, 4.3f);
             
             transform.position += (Vector3.left * Time.deltaTime * Speed);
         }
-        else if (Input.GetKey(KeyCode.RightArrow))
+        else if (WindowsInput.WindowsInput.GetKey(KeyCode.RightArrow))
         {
             anime.SetBool("IsMove", true);
             transform.localScale = new Vector3(4.3f, 4.3f, 4.3f);
@@ -169,26 +176,27 @@ public class PlayerMovement : MonoBehaviour
             anime.SetBool("IsMove", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) && !IsJump)
+        if (WindowsInput.WindowsInput.GetKeyDown(KeyCode.UpArrow) && !IsJump)
         {
             rigid.AddForce(Vector3.up * JumpSpeed, ForceMode2D.Impulse);
             IsJump = true;
+            FlyKickDelay = 0;
         }
-        else if (Input.GetKey(KeyCode.Z) && !IsJump)
+        else if (WindowsInput.WindowsInput.GetKey(KeyCode.Z) && !IsJump)
         {
             anime.Rebind();
             anime.SetBool("IsSpin", true);
             IsSpin = true;
             SoundManager.instance.PlaySpin();
         }
-        else if (Input.GetKeyDown(KeyCode.X) && !IsAttack)
+        else if (WindowsInput.WindowsInput.GetKeyDown(KeyCode.X) && !IsAttack)
         {
-            if (IsJump)
+            if (IsJump && FlyKickDelay > 0.1f)
             {
                 anime.SetBool("IsFlyAttack", true);
                 IsFlyAttack = true;
             }
-            else
+            else if (!IsJump)
             {
                 anime.Rebind();
                 anime.SetBool("IsAttack", true);

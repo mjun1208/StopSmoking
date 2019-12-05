@@ -38,6 +38,9 @@ public class Intro4 : MonoBehaviour
     {
         if (TalkBox2.IsFinish)
         {
+            //for (int i = 0; i < TalkBox2.Cancers.Count; i++)
+            //    TalkBox2.Cancers[i].SetActive(false);
+            TalkBox2.Cancer.SetActive(false);
             BackGroundCanvers.color = new Color(0, 0, 0, 0);
             TalkBox.CanNext = true;
             Monologue.SetActive(false);
@@ -64,7 +67,7 @@ public class Intro4 : MonoBehaviour
         if (Alpha >= 1)
         {
             BackGroundCanvers.color = new Color(0, 0, 0, 1);
-            if (Credit.GetComponent<RectTransform>().localPosition.y < 2250)
+            if (Credit.GetComponent<RectTransform>().localPosition.y < 2350)
             Credit.transform.position += Vector3.up * 0.05f;
             else
             {

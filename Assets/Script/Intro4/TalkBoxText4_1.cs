@@ -18,6 +18,9 @@ public class TalkBoxText4_1 : MonoBehaviour
 
     public bool IsFinish;
 
+    public GameObject Cancer;
+    public List<GameObject> Cancers = new List<GameObject>();
+    private List<SpriteRenderer> Cancers_Renderer = new List<SpriteRenderer>();
     [HideInInspector] public bool CanNext;
 
     private void Awake()
@@ -40,6 +43,12 @@ public class TalkBoxText4_1 : MonoBehaviour
         //Texts[15] = "이제 깨달았으면 금연을 하여라..";
         //Texts[16] = "알겠습니다.. 흑흑";
         textCount = 0;
+
+        for (int i = 0; i < Cancer.transform.childCount; i++)
+        {
+            Cancers.Add(Cancer.transform.GetChild(i).gameObject);
+            Cancers_Renderer.Add(Cancers[i].GetComponent<SpriteRenderer>());
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -108,12 +117,16 @@ public class TalkBoxText4_1 : MonoBehaviour
         {
 
             //SoundManager.instance.PlayTalk_Sans();
-
+            if (i_NowText > 2)
+                Cancers_Renderer[i_NowText - 3].color = new Color(1, 1, 1, (float)((float)textCount / (float)NowText.Length));
+            
             textUI.text += NowText[textCount++];
             StartCoroutine(Typing());
         }
         else
         {
+            if (i_NowText > 2)
+                Cancers_Renderer[i_NowText - 3].color = new Color(1, 1, 1, 1);
             IsDone = true;
             CanNext = false;
         }

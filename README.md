@@ -6,3 +6,7 @@
 
 #### 실행 파일 :
 https://github.com/mjun1208/StopSmoking/releases/tag/StopSmoking
+
+#### 게임 설명:
+
+후레시맨 플레시 게임을 모티브로 만들었습니다.
